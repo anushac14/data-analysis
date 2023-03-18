@@ -2,6 +2,8 @@ import "./App.css";
 import { useState } from "react";
 import Papa from "papaparse";
 
+//used this website to parse data https://medium.com/how-to-react/how-to-parse-or-read-csv-files-in-reactjs-81e8ee4870b0
+
 function App() {
   // State to store parsed data
   const [parsedData, setParsedData] = useState([]);
