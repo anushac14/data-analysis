@@ -51,7 +51,6 @@ function App() {
         )}
       </div>
 
-      <p> {parsedCsvData.data} </p>
   
     </div>
   );
