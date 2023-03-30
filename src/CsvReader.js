@@ -1,8 +1,13 @@
 import { useState } from 'react'
+import React from 'react';
+import { ScatterChart, Scatter, XAxis, 
+    YAxis, CartesianGrid } from 'recharts';
 
 export default function CsvReader(){
     const [csvFile, setCsvFile] = useState();
     const [csvArray, setCsvArray] = useState([]);
+    const one_col = []; 
+    const two_col = []; 
 
     // [{name: "", age: 0, rank: ""},{name: "", age: 0, rank: ""}]
 
@@ -23,8 +28,31 @@ export default function CsvReader(){
         for(let i = 0; i < headers.length; ++i){
             console.log(headers[i])
         }
-        console.log(newArray[0]); 
+        for(let i = 0; i < newArray.length; ++i){
+            one_col.push(newArray[i].Temperature); 
+            two_col.push(newArray[i].DewPoint); 
+        }
     }
+
+    function Scatterplot (one_col, two_col){
+        const data = []; 
+        for(let i =0; i < one_col.length; ++i){
+            var obj = {x: one_col[i], y: two_col[i]};
+            data.push(obj); 
+        }
+
+        return (
+            <ScatterChart width={400} height={400}>
+                <CartesianGrid />
+                <XAxis type="number" dataKey="x" />
+                <YAxis type="number" dataKey="y" />
+                <Scatter data={data} fill="green" />
+            </ScatterChart>
+        );
+    }
+
+
+
 
     const submit = () => {
         const file = csvFile;
@@ -33,8 +61,7 @@ export default function CsvReader(){
         reader.onload = function(e) {
             const text = e.target.result;
             console.log(text);
-            processCSV(text)
-            console.log(csvArray); 
+            processCSV(text); 
         }
 
         reader.readAsText(file);
