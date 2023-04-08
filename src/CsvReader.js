@@ -4,19 +4,20 @@ import { ScatterChart, Scatter, XAxis,
     YAxis, CartesianGrid } from 'recharts';
 import Select from "react-select"	
 import CreatableSelect from "react-select/creatable";
+import MultiSelect from  'react-multiple-select-dropdown-lite'
+import  'react-multiple-select-dropdown-lite/dist/index.css'
 
 var col_names; 	
 var options = []; 	
 var newArray; 
 
 export default function CsvReader(){
-    const [value, setValue] = React.useState("Time End");
+    
+  const [value, setvalue] = useState('')
 
-    const handleChange = (event) => {
-
-        setValue(event.target.value);
-     
-      };
+  const  handleOnchange  =  val  => {
+    setvalue(val)
+  }
      
 
       
@@ -111,21 +112,21 @@ export default function CsvReader(){
             </button>
             <br/>
             <br/>
-            <div>	
-            <label>
+  	
+            <div className="app">
+      <div  className="preview-values">
+        <h4>Values</h4>
+        {value}
+      </div>
 
-                 Select Option
-            <select value={value} onChange={handleChange}>
-                {options.map((option) => (
-                <option value={option.value}>{option.label}</option>
-            ))}
+      <MultiSelect
+        onChange={handleOnchange}
+        options={options}
+      />
+    </div>
 
-</select>
-</label>
-
-<p> {value}</p>
+    {console.log(value)}
                 
-            </div>
             {csvArray.length>0 ? 
             <>
                 <table>
