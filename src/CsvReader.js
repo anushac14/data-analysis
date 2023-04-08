@@ -2,8 +2,24 @@ import { useState } from 'react'
 import React from 'react';
 import { ScatterChart, Scatter, XAxis, 
     YAxis, CartesianGrid } from 'recharts';
+import Select from "react-select"	
+import CreatableSelect from "react-select/creatable";
+
+var col_names; 	
+var options = []; 	
+var newArray; 
 
 export default function CsvReader(){
+    const [value, setValue] = React.useState("Time End");
+
+    const handleChange = (event) => {
+
+        setValue(event.target.value);
+     
+      };
+     
+
+      
     const [csvFile, setCsvFile] = useState();
     const [csvArray, setCsvArray] = useState([]);
     const one_col = []; 
@@ -13,6 +29,12 @@ export default function CsvReader(){
 
     const processCSV = (str, delim=',') => {
         const headers = str.slice(0,str.indexOf('\n')).split(delim);
+        col_names = headers; 	
+        var i; 	
+        for(i = 0; i < headers.length; i++){	
+            var pair = {value: headers[i], label: headers[i]};	
+            options.push(pair); 	
+        }
         const rows = str.slice(str.indexOf('\n')+1).split('\n');
 
         const newArray = rows.map( row => {
@@ -26,7 +48,7 @@ export default function CsvReader(){
         setCsvArray(newArray) 
 
         for(let i = 0; i < headers.length; ++i){
-            console.log(headers[i])
+            //console.log(headers[i])
         }
         for(let i = 0; i < newArray.length; ++i){
             one_col.push(newArray[i].Temperature); 
@@ -60,7 +82,7 @@ export default function CsvReader(){
 
         reader.onload = function(e) {
             const text = e.target.result;
-            console.log(text);
+            //console.log(text);
             processCSV(text); 
         }
 
@@ -89,6 +111,21 @@ export default function CsvReader(){
             </button>
             <br/>
             <br/>
+            <div>	
+            <label>
+
+                 Select Option
+            <select value={value} onChange={handleChange}>
+                {options.map((option) => (
+                <option value={option.value}>{option.label}</option>
+            ))}
+
+</select>
+</label>
+
+<p> {value}</p>
+                
+            </div>
             {csvArray.length>0 ? 
             <>
                 <table>
