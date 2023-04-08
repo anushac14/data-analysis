@@ -7,20 +7,17 @@ import CreatableSelect from "react-select/creatable";
 import MultiSelect from  'react-multiple-select-dropdown-lite'
 import  'react-multiple-select-dropdown-lite/dist/index.css'
 
-var col_names; 	
+var col_names = []; 	
 var options = []; 	
-var newArray; 
+var newArray = []; 
+var plot_col; 
 
 export default function CsvReader(){
-    
-  const [value, setvalue] = useState('')
-
+const [value, setvalue] = useState('')
   const  handleOnchange  =  val  => {
     setvalue(val)
   }
-     
-
-      
+    
     const [csvFile, setCsvFile] = useState();
     const [csvArray, setCsvArray] = useState([]);
     const one_col = []; 
@@ -37,41 +34,38 @@ export default function CsvReader(){
             options.push(pair); 	
         }
         const rows = str.slice(str.indexOf('\n')+1).split('\n');
+        for (let i = 0; i < rows.length; ++i){
+            var row = rows[i].split(','); 
+            newArray.push(row); 
+        }
 
-        const newArray = rows.map( row => {
-            const values = row.split(delim);
-            const eachObject = headers.reduce((obj, header, i) => {
-                obj[header] = values[i];
-                return obj;
-            }, {})
-            return eachObject;
-        })
+        // const newArray = rows.map( row => {
+        //     const values = row.split(delim);
+        //     const eachObject = headers.reduce((obj, header, i) => {
+        //         obj[header] = values[i];
+        //         return obj;
+        //     }, {})
+        //     return eachObject;
+        // })
         setCsvArray(newArray) 
-
-        for(let i = 0; i < headers.length; ++i){
-            //console.log(headers[i])
-        }
-        for(let i = 0; i < newArray.length; ++i){
-            one_col.push(newArray[i].Temperature); 
-            two_col.push(newArray[i].DewPoint); 
-        }
     }
 
-    function Scatterplot (one_col, two_col){
-        const data = []; 
-        for(let i =0; i < one_col.length; ++i){
-            var obj = {x: one_col[i], y: two_col[i]};
-            data.push(obj); 
+    function Scatterplot (){
+        var cols = value.split(',');
+        var one_col_num = -1; 
+        var two_col_num = -1
+        for(let i = 0; i < col_names.length; ++i){
+            if(col_names[i] == cols[0]){
+                one_col_num = i
+            }
+            if(col_names[i] == cols[1]){
+                two_col_num = i
+            }
         }
 
-        return (
-            <ScatterChart width={400} height={400}>
-                <CartesianGrid />
-                <XAxis type="number" dataKey="x" />
-                <YAxis type="number" dataKey="y" />
-                <Scatter data={data} fill="green" />
-            </ScatterChart>
-        );
+
+        console.log(one_col)
+        console.log(two_col)
     }
 
 
@@ -124,27 +118,14 @@ export default function CsvReader(){
         options={options}
       />
     </div>
-
-    {console.log(value)}
+    {Scatterplot()} 
                 
             {csvArray.length>0 ? 
             <>
                 <table>
                     <thead>
-                        <th>Group Start</th>
-                        <th>Group End</th>
-                        <th>Time Start</th>
                     </thead>
                     <tbody>
-                        {
-                            csvArray.map((item, i) => (
-                                <tr key={i}>
-                                    <td>{item.Group}</td>
-                                    <td>{item.End}</td>
-                                    <td>{item.TimeStart}</td>
-                                </tr>
-                            ))
-                        }
                     </tbody>
                 </table>
             </> : null}
